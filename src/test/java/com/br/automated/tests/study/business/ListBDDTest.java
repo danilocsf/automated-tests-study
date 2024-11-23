@@ -29,7 +29,7 @@ public class ListBDDTest {
 
         // Given / Arrange
         List<?> list = mock(List.class);
-        given(list.size()).willReturn(10).thenReturn(20);
+        given(list.size()).willReturn(10).willReturn(20);
 
         // When / Act & Then / Assert
         assertThat(list.size(), is(10));
