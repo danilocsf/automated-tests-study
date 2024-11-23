@@ -4,6 +4,7 @@ import com.br.automated.tests.study.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -115,10 +116,47 @@ class CourseBusinessBDDMockTest {
 
         /*atLeast(1) ou atLeastOnce() - Verifica se deleteCourse foi chamado ao menos 1 vez*/
         // atLeast(1))
-        then(mockService, )
+        then(mockService)
                 .should(atLeastOnce())
                 .deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
+    }
 
+    @DisplayName("Delete Courses not Related to Spring Capturing Arguments sould call Method deleteCourse V1")
+    @Test
+    void testDeleteCoursesNotRelatedToSpring_CapturingArguments_Should_CallMethod_deleteCourseV1() {
 
+        // Given / Arrange
+        courses = Arrays.asList(
+                "Agile Desmistificado com Scrum, XP, Kanban e Trello",
+                "REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker"
+            );
+        given(mockService.retrieveCourses("Leandro"))
+                .willReturn(courses);
+
+        ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+
+        String agileCourse = "Agile Desmistificado com Scrum, XP, Kanban e Trello";
+
+        // When / Act
+        business.deleteCoursesNotRelatedToSpring("Leandro");
+
+        then(mockService).should().deleteCourse(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue(), is(agileCourse));
+    }
+
+    @DisplayName("Delete Courses not Related to Spring Capturing Arguments sould call Method deleteCourse V2")
+    @Test
+    void testDeleteCoursesNotRelatedToSpring_CapturingArguments_Should_CallMethod_deleteCourseV2() {
+
+        // Given / Arrange
+        given(mockService.retrieveCourses("Leandro"))
+                .willReturn(courses);
+
+        ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+
+        // When / Act
+        business.deleteCoursesNotRelatedToSpring("Leandro");
+        then(mockService).should(times(7)).deleteCourse(argumentCaptor.capture());
+        assertThat(argumentCaptor.getAllValues().size(), is(7));
     }
 }
