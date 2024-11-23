@@ -2,6 +2,7 @@ package com.br.automated.tests.study.business;
 
 import com.br.automated.tests.study.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -53,5 +54,71 @@ class CourseBusinessBDDMockTest {
 
         // Then / Assert
         assertThat(filteredCourses.size(), is(4));
+    }
+
+    @DisplayName("Delete Courses not Related to Spring Using Mockito sould call Method deleteCourse V1")
+    @Test
+    void testDeleteCoursesNotRelatedToSpring_UsingMockitoVerify_Should_CallMethod_deleteCourseV1() {
+
+        // Given / Arrange
+        given(mockService.retrieveCourses("Leandro"))
+                .willReturn(courses);
+
+        // When / Act
+        business.deleteCoursesNotRelatedToSpring("Leandro");
+
+        // Then / Assert
+        /*Verifica se deleteCourse foi chamado*/
+        verify(mockService)
+            .deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
+
+        // times(1) Verifica se deleteCourse foi chamado apenas 1 vez
+        verify(mockService, times(1))
+                .deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
+
+        /*never() - Verifica se deleteCourse não foi chamado*/
+        verify(mockService, never())
+                .deleteCourse("REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker");
+
+        /*atLeast(1) ou atLeastOnce() - Verifica se deleteCourse foi chamado ao menos 1 vez*/
+        // verify(mockService, atLeast(1))
+        verify(mockService, atLeastOnce())
+                .deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
+    }
+
+    @DisplayName("Delete Courses not Related to Spring Using Mockito sould call Method deleteCourse V2")
+    @Test
+    void testDeleteCoursesNotRelatedToSpring_UsingMockitoVerify_Should_CallMethod_deleteCourseV2() {
+
+        // Given / Arrange
+        given(mockService.retrieveCourses("Leandro"))
+                .willReturn(courses);
+
+        // When / Act
+        business.deleteCoursesNotRelatedToSpring("Leandro");
+
+        // Then / Assert
+        /*Verifica se deleteCourse foi chamado*/
+        then(mockService)
+                .should()
+                    .deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
+
+        // times(1) Verifica se deleteCourse foi chamado apenas 1 vez
+        then(mockService)
+                .should(times(1))
+                    .deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
+
+        /*never() - Verifica se deleteCourse não foi chamado*/
+        then(mockService)
+                .should(never())
+                .deleteCourse("REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker");
+
+        /*atLeast(1) ou atLeastOnce() - Verifica se deleteCourse foi chamado ao menos 1 vez*/
+        // atLeast(1))
+        then(mockService, )
+                .should(atLeastOnce())
+                .deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
+
+
     }
 }
